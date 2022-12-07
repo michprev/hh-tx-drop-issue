@@ -1,0 +1,114 @@
+============================= test session starts ==============================
+platform linux -- Python 3.7.12, pytest-7.2.0, pluggy-1.0.0
+rootdir: /home/michal/git/hh_tx_drop_bug
+plugins: asyncio-0.20.2, hypothesis-6.27.3, xdist-1.34.0, forked-1.4.0, profiling-1.7.0
+asyncio: mode=strict
+collected 1 item
+
+tests/test_counter.py F
+
+=================================== FAILURES ===================================
+_________________________________ test_counter _________________________________
+
+    @connect(default_chain, "http://localhost:8545")
+    @snapshot_and_revert(default_chain)
+    def test_counter():
+        default_chain.default_account = default_chain.accounts[0]
+        default_chain.gas_price = 0
+    
+        counter = Counter.deploy()
+        counter.count()
+        assert counter.count() == 0
+    
+        with default_chain.change_automine(False):
+            tx1 = counter.increment(return_tx=True)
+            tx2 = counter.increment(return_tx=True)
+    
+            default_chain.mine()
+    
+>       assert counter.count() == 2
+E       assert 1 == 2
+E        +  where 1 = <bound method Counter.count of Counter(0x5FbDB2315678afecb367f032d93F642f64180aa3)>()
+E        +    where <bound method Counter.count of Counter(0x5FbDB2315678afecb367f032d93F642f64180aa3)> = Counter(0x5FbDB2315678afecb367f032d93F642f64180aa3).count
+
+tests/test_counter.py:23: AssertionError
+------------------------------ Captured log call -------------------------------
+INFO     woke.testing.json_rpc.communicator:communicator.py:89 Sending request:
+{'jsonrpc': '2.0', 'method': 'web3_clientVersion', 'params': [], 'id': 0}
+INFO     woke.testing.json_rpc.communicator:communicator.py:93 Received response:
+{"jsonrpc":"2.0","id":0,"result":"HardhatNetwork/2.12.3/@nomicfoundation/ethereumjs-vm/6.0.0"}
+INFO     woke.testing.json_rpc.communicator:communicator.py:89 Sending request:
+{'jsonrpc': '2.0', 'method': 'eth_accounts', 'params': [], 'id': 1}
+INFO     woke.testing.json_rpc.communicator:communicator.py:93 Received response:
+{"jsonrpc":"2.0","id":1,"result":["0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266","0x70997970c51812dc3a010c7d01b50e0d17dc79c8","0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc","0x90f79bf6eb2c4f870365e785982e1f101e93b906","0x15d34aaf54267db7d7c367839aaf71a00a2c6a65","0x9965507d1a55bcc2695c58ba16fb37d819b0a4dc","0x976ea74026e726554db657fa54763abd0c3a0aa9","0x14dc79964da2c08b23698b3d3cc7ca32193d9955","0x23618e81e3f5cdf7f54c3d65f7fbc0abf5b21e8f","0xa0ee7a142d267c1f36714e4a8f75612f20a79720","0xbcd4042de499d14e55001ccbb24a551f3b954096","0x71be63f3384f5fb98995898a86b02fb2426c5788","0xfabb0ac9d68b0b445fb7357272ff202c5651694a","0x1cbd3b2770909d4e10f157cabc84c7264073c9ec","0xdf3e18d64bc6a983f673ab319ccae4f1a57c7097","0xcd3b766ccdd6ae721141f452c550ca635964ce71","0x2546bcd3c84621e976d8185a91a922ae77ecec30","0xbda5747bfd65f08deb54cb465eb87d40e51b197e","0xdd2fd4581271e230360230f9337d5c0430bf44c0","0x8626f6940e2eb28930efb4cef49b2d1f2c9c1199"]}
+INFO     woke.testing.json_rpc.communicator:communicator.py:89 Sending request:
+{'jsonrpc': '2.0', 'method': 'eth_getBlockByNumber', 'params': ['latest', False], 'id': 2}
+INFO     woke.testing.json_rpc.communicator:communicator.py:93 Received response:
+{"jsonrpc":"2.0","id":2,"result":{"number":"0x0","hash":"0xf6e3fe5bedb0ff85a294bcfbe6d6a5c16055f45238525e34315e53c0900d2529","parentHash":"0x0000000000000000000000000000000000000000000000000000000000000000","nonce":"0x0000000000000000","mixHash":"0x53c5ae3ce8eefbfad3aca77e5f4e1b19a949b04e2e5ce7a24fbb64422f14f0bf","sha3Uncles":"0x1dcc4de8dec75d7aab85b567b6ccd41ad312451b948a7413f0a142fd40d49347","logsBloom":"0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000","transactionsRoot":"0x56e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b421","stateRoot":"0x950cc3b1c26a9cd52a81793977d91eb11603c310375216ccacc4ffe18af72959","receiptsRoot":"0x56e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b421","miner":"0x0000000000000000000000000000000000000000","difficulty":"0x0","totalDifficulty":"0x0","extraData":"0x1234","size":"0x200","gasLimit":"0x1c9c380","gasUsed":"0x0","timestamp":"0x6390e0f4","transactions":[],"uncles":[],"baseFeePerGas":"0x0"}}
+INFO     woke.testing.json_rpc.communicator:communicator.py:89 Sending request:
+{'jsonrpc': '2.0', 'method': 'eth_chainId', 'params': [], 'id': 3}
+INFO     woke.testing.json_rpc.communicator:communicator.py:93 Received response:
+{"jsonrpc":"2.0","id":3,"result":"0x7a69"}
+INFO     woke.testing.json_rpc.communicator:communicator.py:89 Sending request:
+{'jsonrpc': '2.0', 'method': 'eth_gasPrice', 'params': [], 'id': 4}
+INFO     woke.testing.json_rpc.communicator:communicator.py:93 Received response:
+{"jsonrpc":"2.0","id":4,"result":"0x3b9aca00"}
+INFO     woke.testing.json_rpc.communicator:communicator.py:89 Sending request:
+{'jsonrpc': '2.0', 'method': 'evm_snapshot', 'params': [], 'id': 5}
+INFO     woke.testing.json_rpc.communicator:communicator.py:93 Received response:
+{"jsonrpc":"2.0","id":5,"result":"0x16"}
+INFO     woke.testing.json_rpc.communicator:communicator.py:89 Sending request:
+{'jsonrpc': '2.0', 'method': 'eth_getTransactionCount', 'params': ['0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266', <BlockEnum.LATEST: 'latest'>], 'id': 6}
+INFO     woke.testing.json_rpc.communicator:communicator.py:93 Received response:
+{"jsonrpc":"2.0","id":6,"result":"0x0"}
+INFO     woke.testing.json_rpc.communicator:communicator.py:89 Sending request:
+{'jsonrpc': '2.0', 'method': 'eth_sendTransaction', 'params': [{'type': '0x2', 'nonce': '0x0', 'from': '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266', 'gas': '0x1c9c380', 'value': '0x0', 'data': '0x608060405234801561001057600080fd5b50610151806100206000396000f3fe608060405234801561001057600080fd5b50600436106100365760003560e01c806306661abd1461003b578063d09de08a14610059575b600080fd5b610043610063565b604051610050919061009d565b60405180910390f35b610061610069565b005b60005481565b600160008082825461007b91906100e7565b92505081905550565b6000819050919050565b61009781610084565b82525050565b60006020820190506100b2600083018461008e565b92915050565b7f4e487b7100000000000000000000000000000000000000000000000000000000600052601160045260246000fd5b60006100f282610084565b91506100fd83610084565b9250828201905080821115610115576101146100b8565b5b9291505056fea2646970667358221220293b9d43b376e779b63ff7b51d0e484f49ef626806e1132c5c38b635dc6d161e64736f6c63430008110033', 'gasPrice': '0x0'}], 'id': 7}
+INFO     woke.testing.json_rpc.communicator:communicator.py:93 Received response:
+{"jsonrpc":"2.0","id":7,"result":"0xd7efc2348b18e68071949393477bb583f31783d4fd856dad4ad50517f5399a16"}
+INFO     woke.testing.json_rpc.communicator:communicator.py:89 Sending request:
+{'jsonrpc': '2.0', 'method': 'eth_getTransactionReceipt', 'params': ['0xd7efc2348b18e68071949393477bb583f31783d4fd856dad4ad50517f5399a16'], 'id': 8}
+INFO     woke.testing.json_rpc.communicator:communicator.py:93 Received response:
+{"jsonrpc":"2.0","id":8,"result":{"transactionHash":"0xd7efc2348b18e68071949393477bb583f31783d4fd856dad4ad50517f5399a16","transactionIndex":"0x0","blockHash":"0x76cfdefc13ad0b04991e35a8b3afb5501f12fe607c950ba4205b7b0a5391a087","blockNumber":"0x1","from":"0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266","to":null,"cumulativeGasUsed":"0x1eaa5","gasUsed":"0x1eaa5","contractAddress":"0x5fbdb2315678afecb367f032d93f642f64180aa3","logs":[],"logsBloom":"0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000","type":"0x0","status":"0x1","effectiveGasPrice":"0x0"}}
+INFO     woke.testing.json_rpc.communicator:communicator.py:89 Sending request:
+{'jsonrpc': '2.0', 'method': 'eth_call', 'params': [{'type': '0x2', 'nonce': '0x1', 'to': '0x5FbDB2315678afecb367f032d93F642f64180aa3', 'from': '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266', 'gas': '0x1c9c380', 'value': '0x0', 'data': '0x06661abd', 'gasPrice': '0x0'}, <BlockEnum.LATEST: 'latest'>], 'id': 9}
+INFO     woke.testing.json_rpc.communicator:communicator.py:93 Received response:
+{"jsonrpc":"2.0","id":9,"result":"0x0000000000000000000000000000000000000000000000000000000000000000"}
+INFO     woke.testing.json_rpc.communicator:communicator.py:89 Sending request:
+{'jsonrpc': '2.0', 'method': 'eth_call', 'params': [{'type': '0x2', 'nonce': '0x1', 'to': '0x5FbDB2315678afecb367f032d93F642f64180aa3', 'from': '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266', 'gas': '0x1c9c380', 'value': '0x0', 'data': '0x06661abd', 'gasPrice': '0x0'}, <BlockEnum.LATEST: 'latest'>], 'id': 10}
+INFO     woke.testing.json_rpc.communicator:communicator.py:93 Received response:
+{"jsonrpc":"2.0","id":10,"result":"0x0000000000000000000000000000000000000000000000000000000000000000"}
+INFO     woke.testing.json_rpc.communicator:communicator.py:89 Sending request:
+{'jsonrpc': '2.0', 'method': 'hardhat_getAutomine', 'params': [], 'id': 11}
+INFO     woke.testing.json_rpc.communicator:communicator.py:93 Received response:
+{"jsonrpc":"2.0","id":11,"result":true}
+INFO     woke.testing.json_rpc.communicator:communicator.py:89 Sending request:
+{'jsonrpc': '2.0', 'method': 'evm_setAutomine', 'params': [False], 'id': 12}
+INFO     woke.testing.json_rpc.communicator:communicator.py:93 Received response:
+{"jsonrpc":"2.0","id":12,"result":true}
+INFO     woke.testing.json_rpc.communicator:communicator.py:89 Sending request:
+{'jsonrpc': '2.0', 'method': 'eth_sendTransaction', 'params': [{'type': '0x2', 'nonce': '0x1', 'to': '0x5FbDB2315678afecb367f032d93F642f64180aa3', 'from': '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266', 'gas': '0x1c9c380', 'value': '0x0', 'data': '0xd09de08a', 'gasPrice': '0x0'}], 'id': 13}
+INFO     woke.testing.json_rpc.communicator:communicator.py:93 Received response:
+{"jsonrpc":"2.0","id":13,"result":"0x06bfa076aff97254dbe774418cfdd801953e184c86a79f8438162bd8eb25e318"}
+INFO     woke.testing.json_rpc.communicator:communicator.py:89 Sending request:
+{'jsonrpc': '2.0', 'method': 'eth_sendTransaction', 'params': [{'type': '0x2', 'nonce': '0x2', 'to': '0x5FbDB2315678afecb367f032d93F642f64180aa3', 'from': '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266', 'gas': '0x1c9c380', 'value': '0x0', 'data': '0xd09de08a', 'gasPrice': '0x0'}], 'id': 14}
+INFO     woke.testing.json_rpc.communicator:communicator.py:93 Received response:
+{"jsonrpc":"2.0","id":14,"result":"0x13e2c64339a3521e989bd75e8ca65573e766f28ade968d0f7ea082072d079e9b"}
+INFO     woke.testing.json_rpc.communicator:communicator.py:89 Sending request:
+{'jsonrpc': '2.0', 'method': 'evm_mine', 'params': [], 'id': 15}
+INFO     woke.testing.json_rpc.communicator:communicator.py:93 Received response:
+{"jsonrpc":"2.0","id":15,"result":"0x0"}
+INFO     woke.testing.json_rpc.communicator:communicator.py:89 Sending request:
+{'jsonrpc': '2.0', 'method': 'evm_setAutomine', 'params': [True], 'id': 16}
+INFO     woke.testing.json_rpc.communicator:communicator.py:93 Received response:
+{"jsonrpc":"2.0","id":16,"result":true}
+INFO     woke.testing.json_rpc.communicator:communicator.py:89 Sending request:
+{'jsonrpc': '2.0', 'method': 'eth_call', 'params': [{'type': '0x2', 'nonce': '0x3', 'to': '0x5FbDB2315678afecb367f032d93F642f64180aa3', 'from': '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266', 'gas': '0x1c9c380', 'value': '0x0', 'data': '0x06661abd', 'gasPrice': '0x0'}, <BlockEnum.LATEST: 'latest'>], 'id': 17}
+INFO     woke.testing.json_rpc.communicator:communicator.py:93 Received response:
+{"jsonrpc":"2.0","id":17,"result":"0x0000000000000000000000000000000000000000000000000000000000000001"}
+INFO     woke.testing.json_rpc.communicator:communicator.py:89 Sending request:
+{'jsonrpc': '2.0', 'method': 'evm_revert', 'params': ['0x16'], 'id': 18}
+INFO     woke.testing.json_rpc.communicator:communicator.py:93 Received response:
+{"jsonrpc":"2.0","id":18,"result":true}
+=========================== short test summary info ============================
+FAILED tests/test_counter.py::test_counter - assert 1 == 2
+============================== 1 failed in 0.54s ===============================
